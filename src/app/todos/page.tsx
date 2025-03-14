@@ -11,19 +11,15 @@ interface Todo {
 
 const Page = () => {
   const [todos, setTodos] = useState<Todo[] | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        setLoading(true);
         const res = await fetch("https://dummyjson.com/todos");
         const data = await res.json();
         setTodos(data.todos);
       } catch (e) {
         console.error(e);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -47,42 +43,34 @@ const Page = () => {
         All ToDos
       </h1>
 
-      {/* Loading State */}
-      {loading ? (
-        <div className="flex justify-center items-center mt-10">
-          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <span className="ml-3 text-lg">Loading...</span>
-        </div>
-      ) : (
-        // Table Section
-        <div className="overflow-x-auto mt-10">
-          <table className="w-3/4 mx-auto border border-gray-700 shadow-lg rounded-lg overflow-hidden bg-gray-900">
-            <thead>
-              <tr className="bg-gray-800 text-white">
-                <th className="py-3 px-6 text-left">Todo</th>
-                <th className="py-3 px-6 text-center">Completed</th>
-              </tr>
-            </thead>
-            <tbody>
-              {todos?.map((p) => (
-                <tr
-                  key={p.id}
-                  className="border-b border-gray-700 hover:bg-gray-800 transition duration-200"
+      {/* Table Section */}
+      <div className="overflow-x-auto mt-10">
+        <table className="w-3/4 mx-auto border border-gray-700 shadow-lg rounded-lg overflow-hidden bg-gray-900">
+          <thead>
+            <tr className="bg-gray-800 text-white">
+              <th className="py-3 px-6 text-left">Todo</th>
+              <th className="py-3 px-6 text-center">Completed</th>
+            </tr>
+          </thead>
+          <tbody>
+            {todos?.map((p) => (
+              <tr
+                key={p.id}
+                className="border-b border-gray-700 hover:bg-gray-800 transition duration-200"
+              >
+                <td className="py-4 px-6">{p.todo}</td>
+                <td
+                  className={`py-4 px-6 text-center font-semibold ${
+                    p.completed ? "text-green-400" : "text-red-400"
+                  }`}
                 >
-                  <td className="py-4 px-6">{p.todo}</td>
-                  <td
-                    className={`py-4 px-6 text-center font-semibold ${
-                      p.completed ? "text-green-400" : "text-red-400"
-                    }`}
-                  >
-                    {p.completed ? "✔ Yes" : "❌ No"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                  {p.completed ? "✔ Yes" : "❌ No"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
